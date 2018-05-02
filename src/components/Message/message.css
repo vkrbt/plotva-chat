@@ -46,16 +46,16 @@
   line-height: 10px;
 }
 
+.message__status {
+  right: 35px;
+}
+
 .message_my .message__status {
   display: block;
+  right: 5px;
 }
 
 .message_my .message__time {
   right: 20px;
   color: #19c700;
-}
-
-.message .icon {
-  position: relative;
-  right: -3px;
 }

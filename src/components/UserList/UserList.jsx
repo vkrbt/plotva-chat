@@ -91,9 +91,7 @@ class UserListComponent extends PureComponent {
     }
     return (
       <React.Fragment>
-        {createChat ? (
-          false
-        ) : (
+        {!createChat ? (
           <Contact
             userName={user.name}
             content={user.phone}
@@ -102,7 +100,7 @@ class UserListComponent extends PureComponent {
             contentType="message"
             color="7"
           />
-        )}
+        ) : null}
         <InfiniteScroller loadMore={this.fetchNext}>
           <Contacts
             type="contactList"
