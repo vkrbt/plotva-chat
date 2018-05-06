@@ -4,6 +4,19 @@ const {getUser} = require('./user');
 
 const TABLE = 'rooms';
 
+async function getRoomName(db, room, userId) {
+    if (room.users.length === 2 && room.name.includes(userId.toString())) {
+        const companion = room.users.find((user) => {
+            return user.toString() !== userId.toString();
+        });
+        if (companion) {
+            const user = await getUser(db, companion);
+            return user.name;
+        }
+    }
+    return room.name;
+}
+
 /**
  * @typedef {{
  *  [_id]: string,
@@ -19,7 +32,7 @@ const TABLE = 'rooms';
  * @return {Promise<Room>}
  */
 async function getRoom(db, id) {
-    return db.collection(TABLE).findOne({_id: ObjectId(id.toString())});
+    const room = db.collection(TABLE).findOne({_id: ObjectId(id.toString())});
 }
 
 /**
@@ -50,10 +63,20 @@ async function getRooms(db, filter) {
  * @return {Promise<Pagination<Room>>}
  */
 async function getUserRooms(db, userId, filter) {
-    return pageableCollection(db.collection(TABLE), {
+    const rooms = await pageableCollection(db.collection(TABLE), {
         ...filter,
         users: ObjectId(userId.toString()),
     });
+    if (rooms && rooms.items) {
+        const roomsWithNames = await Promise.all(rooms.items.map(async (room) => {
+            const name = await getRoomName(db, room, userId);
+            room.name = name;
+            return room;
+        }));
+        rooms.items = roomsWithNames
+        return rooms;
+    }
+    return rooms;
 }
 
 /**

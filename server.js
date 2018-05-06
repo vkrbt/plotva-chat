@@ -1,12 +1,12 @@
 const {createServer} = require('./src/server/server');
 
 const {
-    MONGO_USER = '',
-    MONGO_PASSWORD = '',
+    MONGO_USER,
+    MONGO_PASSWORD,
     MONGO_LOCAL = 'false',
-    MONGO_DATABASE = 'yandex-shri',
-    MONGO_HOST = 'ds215759.mlab.com',
-    MONGO_PORT = 15759,
+    MONGO_DATABASE,
+    MONGO_HOST,
+    MONGO_PORT,
     SERVER_HOST = 'localhost',
     SERVER_PORT = 3001
 } = process.env;
@@ -15,8 +15,8 @@ const {
  * Setup mongo configuration
  */
 const DATABASE_CONFIG = {
-    user: 'admin',
-    password: 'admin',
+    user: MONGO_USER,
+    password: MONGO_PASSWORD,
     host: MONGO_HOST,
     port: MONGO_PORT,
     local: MONGO_LOCAL !== 'false',

@@ -67,7 +67,7 @@ class ChatComponent extends PureComponent {
 }
 
 const stateToProps = state => ({
-  user: state.user.user,
+  user: state.user,
   messages: state.messages,
 });
 

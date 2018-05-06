@@ -87,7 +87,7 @@ export class ProfileEditComponent extends Component {
 }
 
 const stateToProps = state => ({
-  user: state.user.user,
+  user: state.user,
 });
 
 export const ProfileEdit = connect(stateToProps)(ProfileEditComponent);

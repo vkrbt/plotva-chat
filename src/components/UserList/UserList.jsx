@@ -43,8 +43,8 @@ class UserListComponent extends PureComponent {
     }
     try {
       let resp = await api.getUsers(next);
-      const users = this.props.users.concat(
-        resp.items.map(user => {
+      const users = [...this.props.users,
+        ...resp.items.map(user => {
           const status = user.online ? 'online' : 'offline';
           return {
             _id: user._id,
@@ -55,7 +55,8 @@ class UserListComponent extends PureComponent {
             contentType: status,
           };
         }),
-      );
+      ];
+      console.log(resp);
       this.props.dispatch(setUsers(users));
       this.props.dispatch(setNext(resp.next));
     } catch (err) {
@@ -66,7 +67,7 @@ class UserListComponent extends PureComponent {
 
   addToChat(index) {
     const users = [].concat(this.props.users);
-    const selectedUsers = [].concat(this.props.selectedUsers);
+    const selectedUsers = [...this.props.selectedUsers];
     const current = users[index];
 
     if (!current.checked) {
@@ -118,10 +119,10 @@ class UserListComponent extends PureComponent {
 }
 
 const stateToProps = state => ({
-  user: state.user.user,
-  users: state.user.users,
-  next: state.user.next,
-  selectedUsers: state.user.selectedUsers,
+  user: state.user,
+  users: state.users.users,
+  next: state.users.next,
+  selectedUsers: state.users.selectedUsers,
   current: state.search.currentUserSearch,
 });
 
