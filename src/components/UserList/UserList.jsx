@@ -43,7 +43,8 @@ class UserListComponent extends PureComponent {
     }
     try {
       let resp = await api.getUsers(next);
-      const users = [...this.props.users,
+      let users = [
+        ...this.props.users,
         ...resp.items.map(user => {
           const status = user.online ? 'online' : 'offline';
           return {
@@ -56,7 +57,7 @@ class UserListComponent extends PureComponent {
           };
         }),
       ];
-      console.log(resp);
+      users = users.filter(user => user._id !== this.props.user._id);
       this.props.dispatch(setUsers(users));
       this.props.dispatch(setNext(resp.next));
     } catch (err) {
@@ -65,7 +66,7 @@ class UserListComponent extends PureComponent {
     }
   }
 
-  addToChat(index){
+  addToChat(index) {
     const users = [].concat(this.props.users);
     const selectedUsers = [...this.props.selectedUsers];
     const current = users[index];

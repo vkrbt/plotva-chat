@@ -15,10 +15,16 @@ export class MessagesList extends Component {
     this.scrollToBottom();
   }
   scrollToBottom() {
-    this.messageList.current.lastChild.scrollIntoView({behavior: 'smooth'});
+    if (this.messageList.current.lastChild) {
+      this.messageList.current.lastChild.scrollIntoView({ behavior: 'smooth' });
+    }
   }
   render() {
     const { messages } = this.props;
-    return <div ref={this.messageList} className="messages-list">{messages.map(message => <Message key={message.id} {...message} />)}</div>;
+    return (
+      <div ref={this.messageList} className="messages-list">
+        {messages.map(message => <Message key={message.id} {...message} />)}
+      </div>
+    );
   }
 }

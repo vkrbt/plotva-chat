@@ -13,11 +13,10 @@ import { connect } from 'react-redux';
 
 class HeaderComponent extends Component {
   newChat = async () => {
-    const { user, selectedUsers } = this.props;
+    const { selectedUsers } = this.props;
     try {
       const rooms = await api.getRooms({ name: this.props.chatName });
       if (!rooms.count) {
-        selectedUsers.push(user);
         await this.createRoomWithUsers(this.props.chatName, selectedUsers);
 
         const users = [].concat(this.props.users);
@@ -34,8 +33,8 @@ class HeaderComponent extends Component {
 
   createRoomWithUsers = async (name, users) => {
     try {
-      const room = await api.createRoom({ name });
-      await Promise.all(users.map(user => this.joinUserToRoom(user._id, room._id)));
+      const room = await api.createRoom({ name, users });
+      // await Promise.all(users.map(user => this.joinUserToRoom(user._id, room._id)));
     } catch (err) {
       this.setState({ error: 'Произошла при создании комнаты.' });
     }

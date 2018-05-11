@@ -46,6 +46,18 @@ async function saveRoom(db, room) {
     return insertOrUpdateEntity(db.collection(TABLE), room);
 }
 
+async function getRoomsNames(db, rooms, userId) {
+    if (rooms && rooms.items) {
+        const roomsWithNames = await Promise.all(rooms.items.map(async (room) => {
+            const name = await getRoomName(db, room, userId);
+            room.name = name;
+            return room;
+        }));
+        rooms.items = roomsWithNames
+    }
+    return rooms;
+}
+
 /**
  * @param {Db} db
  * @param {{}} filter
@@ -53,7 +65,8 @@ async function saveRoom(db, room) {
  * @return {Promise<Pagination<Room>>}
  */
 async function getRooms(db, filter) {
-    return pageableCollection(db.collection(TABLE), filter);
+    const rooms = pageableCollection(db.collection(TABLE), filter);
+    return getRoomsNames(db, rooms);
 }
 
 /**
@@ -68,16 +81,7 @@ async function getUserRooms(db, userId, filter) {
         ...filter,
         users: ObjectId(userId.toString()),
     });
-    if (rooms && rooms.items) {
-        const roomsWithNames = await Promise.all(rooms.items.map(async (room) => {
-            const name = await getRoomName(db, room, userId);
-            room.name = name;
-            return room;
-        }));
-        rooms.items = roomsWithNames
-        return rooms;
-    }
-    return rooms;
+    return getRoomsNames(db, rooms, userId);
 }
 
 /**
@@ -99,7 +103,7 @@ async function createRoom(db, currentUser, room) {
         // If we clone room
         delete room._id;
 
-        room.users = room.users || [];
+        room.users = room.users.map((user) =>  ObjectId(user._id.toString())) || [];
         room.users.push(currentUser._id);
 
         return insertOrUpdateEntity(collection, room);
