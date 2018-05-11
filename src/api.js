@@ -202,7 +202,7 @@ class Api {
      * @return {Promise<Pagination<Message>>}
      */
     async getRoomMessages(roomId) {
-        return this.getMessages({roomId, order: {created_at: -1}});
+        return this.getMessages({roomId, order: { id: 1 }});
     }
 
     /**

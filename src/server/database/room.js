@@ -33,6 +33,7 @@ async function getRoomName(db, room, userId) {
  */
 async function getRoom(db, id) {
     const room = db.collection(TABLE).findOne({_id: ObjectId(id.toString())});
+    return room;
 }
 
 /**

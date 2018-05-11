@@ -99,6 +99,8 @@ import regSw from './reg-sw';
 (async () => {
   const user = await api.getCurrentUser();
 
+  console.log(!!user);
+
   if (user) {
     store.dispatch(setUser(user));
   }

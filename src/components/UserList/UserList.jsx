@@ -65,7 +65,7 @@ class UserListComponent extends PureComponent {
     }
   }
 
-  addToChat(index) {
+  addToChat(index){
     const users = [].concat(this.props.users);
     const selectedUsers = [...this.props.selectedUsers];
     const current = users[index];

@@ -1,74 +1,64 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { Contacts } from '../Contacts/Contacts';
 import { InfiniteScroller } from '../InfiniteScroller/InfiniteScroller';
 import { NoResults } from '../NoResults/NoResults';
 import { Error } from '../Error/Error';
 import { FETCH_ROOMS_ERROR } from '../../errorCodes';
 import api from '../../api';
+import { getRooms } from '../../store/actions/chatActions';
 
-export class ChatsPage extends PureComponent {
-  constructor() {
-    super();
-    this.state = {
-      rooms: [],
-      next: null,
-      error: null,
-    };
-    this.fetchNext = this.fetchNext.bind(this);
-  }
-
-  componentDidMount() {
-    this.fetchNext(true);
-  }
-
-  async fetchNext(next = this.state.next) {
-    try {
-      if (next) {
-        const response = await this.fetchRooms(next);
-        this.setState(prevState => {
-          return {
-            rooms: [...prevState.rooms, ...response.rooms],
-            next: response.next,
-          };
-        });
-        return response;
+const sortByLastMessage = roomsObj =>
+  Object.keys(roomsObj)
+    .filter(room => !['error', 'next', 'success'].includes(room))
+    .map(room => roomsObj[room])
+    .sort((room1, room2) => {
+      if (!room1.messages.length) {
+        return 1;
       }
-    } catch (error) {
-      this.setState({
-        error,
-      });
-    }
-  }
+      if (!room2.messages.length) {
+        return -1;
+      }
+      return (
+        room2.messages[0].time - room1.messages[0].time
+      );
+    });
 
-  async fetchRooms(next) {
-    const res = await api.getCurrentUserRooms(next);
-    const rooms = await Promise.all(
-      res.items.map(async room => {
-        const messages = await api.getRoomMessages(room._id);
-        return {
-          _id: room._id,
-          userName: room.name,
-          content: (messages.items[0] && messages.items[0].message) || 'No messages',
-        };
+class ChatsPageComponent extends PureComponent {
+  async componentDidMount() {
+    await this.props.getRooms();
+    await Promise.all(
+      sortByLastMessage(this.props.rooms).map(async room => {
+        try {
+          await api.currentUserJoinRoom(room._id);
+        } catch (err) {}
       }),
     );
-    return {
-      rooms,
-      next: res.next,
-    };
   }
 
   render() {
-    const { rooms, error } = this.state;
-    if (!rooms.length && !error) {
+    const { rooms } = this.props;
+    if (!rooms.success && !rooms.error) {
       return <NoResults text="No chats here yet..." />;
     }
+    const roomsArray = sortByLastMessage(rooms);
 
     return (
       <InfiniteScroller hasMore={!!this.next} loadMore={this.fetchNext}>
-        <Contacts contacts={rooms} search="" />
-        {error ? <Error code={FETCH_ROOMS_ERROR} /> : null}
+        <Contacts contacts={roomsArray} search="" />
+        {rooms.error ? <Error code={FETCH_ROOMS_ERROR} /> : null}
       </InfiniteScroller>
     );
   }
 }
+
+const stateToProps = state => ({
+  user: state.user,
+  rooms: state.messages,
+});
+
+const dispatchToProps = {
+  getRooms,
+};
+
+export const ChatsPage = connect(stateToProps, dispatchToProps)(ChatsPageComponent);

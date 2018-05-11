@@ -76,7 +76,12 @@ async function insertOrUpdateEntity(collection, data) {
     return collection.findOne({_id: data._id});
 }
 
+async function removeEntity(collection, data) {
+    return collection.remove(data, {justOne: true});
+}
+
 module.exports = {
     pageableCollection,
-    insertOrUpdateEntity
+    insertOrUpdateEntity,
+    removeEntity
 };

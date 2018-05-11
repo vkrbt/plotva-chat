@@ -25,11 +25,11 @@ export class InfiniteScroller extends Component {
 
   handleScroll() {
     if (this.container) {
-      const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-      const windowHeight = window.innerHeight;
-      const maxScroll = this.container.clientHeight - windowHeight;
+      const scrollTop = this.container.parentElement.scrollTop;
+      const parentHeight = this.container.parentElement.clientHeight;
+      const maxScroll = this.container.clientHeight - parentHeight;
       if (!this.state.isLoading) {
-        if (scrollTop + windowHeight >= maxScroll) {
+        if (scrollTop + parentHeight >= maxScroll) {
           this.loadMore();
         }
       }
@@ -54,16 +54,15 @@ export class InfiniteScroller extends Component {
   }
 
   render() {
-    return this.state.isLoading ? (
-      'Loading...'
-    ) : (
-      <div className="infinite-scroller" ref={this.setRef}>
+    return (
+      <div className={`infinite-scroller ${this.props.reversed ? 'infinite-scroller--reversed': ''}`} ref={this.setRef}>
         {this.props.children}
         {this.props.hasMore ? (
           <button className="infinite-scroller__button" onClick={this.loadMore}>
             Load more
           </button>
         ) : null}
+        {this.state.isLoading ? 'Loading...' : null}
       </div>
     );
   }

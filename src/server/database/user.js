@@ -1,7 +1,7 @@
 const {ObjectId} = require('mongodb');
 
 const {getSessionInfo, saveSessionInfo} = require('./session');
-const {pageableCollection, insertOrUpdateEntity} = require('./helpers');
+const {pageableCollection, insertOrUpdateEntity,removeEntity} = require('./helpers');
 const faker = require('faker');
 
 const TABLE = 'users';
@@ -22,7 +22,7 @@ const TABLE = 'users';
  *
  * @returns {Promise<User>}
  */
-async function findUserBySid(db, sid, user) {
+async function findUserBySid(db, sid) {
     let session = await getSessionInfo(db, sid);
 
     if (!session.userId) {
@@ -45,6 +45,10 @@ async function findUserBySid(db, sid, user) {
     } else {
         return db.collection(TABLE).findOne({_id: session.userId});
     }
+}
+
+async function removeUserById(db, userId) {
+    return removeEntity(db.collection(TABLE), {_id: userId});
 }
 
 /**
@@ -83,6 +87,7 @@ async function getUsers(db, filter) {
 
 module.exports = {
     findUserBySid,
+    removeUserById,
     getUsers,
     getUser,
     saveUser

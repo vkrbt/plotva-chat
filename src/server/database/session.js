@@ -1,4 +1,4 @@
-const {insertOrUpdateEntity} = require('./helpers');
+const {insertOrUpdateEntity, removeEntity} = require('./helpers');
 
 const TABLE = 'sessions';
 
@@ -26,7 +26,12 @@ async function saveSessionInfo(db, session) {
     return insertOrUpdateEntity(db.collection(TABLE), session);
 }
 
+async function removeSession(db, sid) {
+    return removeEntity(db.collection(TABLE), {sid});
+}
+
 module.exports = {
     getSessionInfo,
-    saveSessionInfo
+    saveSessionInfo,
+    removeSession
 };

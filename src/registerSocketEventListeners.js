@@ -12,7 +12,7 @@ export const registerSocketEventListeners = async store => {
       },
     ];
 
-    new Notification('New message', {
+    ServiceWorkerRegistration.showNotification && ServiceWorkerRegistration.showNotification('New message', {
       body: result.message,
       icon: '/favicon.ico',
     });

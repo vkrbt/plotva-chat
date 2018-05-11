@@ -1,7 +1,25 @@
-import { MESSAGES_SET, MESSAGES_APPENDED } from '../actions/actionTypes';
+import { MESSAGES_SET, MESSAGES_APPENDED, GET_ROOMS_RECEIVED, GET_ROOMS_ERROR } from '../actions/actionTypes';
 
-export const messagesReducer = (state = {}, action) => {
+const defaultState = {
+  error: null,
+  next: true,
+  success: false,
+};
+
+export const messagesReducer = (state = defaultState, action) => {
   switch (action.type) {
+    case GET_ROOMS_RECEIVED:
+      return {
+        ...state,
+        ...action.payload.rooms,
+        success: true,
+      };
+    case GET_ROOMS_ERROR:
+      return {
+        ...state,
+        error: action.payload.error,
+        success: false,
+      };
     case MESSAGES_SET:
       return {
         ...state,
@@ -10,24 +28,26 @@ export const messagesReducer = (state = {}, action) => {
           next: action.payload.next,
         },
       };
-    case MESSAGES_APPENDED:
+    case MESSAGES_APPENDED: {
+      const prevState = { ...state };
       if (state[action.payload.roomId] && state[action.payload.roomId].messages.length > 0) {
+        prevState[action.payload.roomId] = {
+          ...state[action.payload.roomId],
+          messages: [...state[action.payload.roomId].messages, ...action.payload.messages],
+          next: action.payload.next,
+        };
         return {
-          ...state,
-          [action.payload.roomId]: {
-            ...state[action.payload.roomId],
-            messages: [...state[action.payload.roomId].messages, ...action.payload.messages],
-            next: action.payload.next,
-          },
+          ...prevState,
         };
       }
-      return {
-        ...state,
-        [action.payload.roomId]: {
-          messages: [...action.payload.messages],
-          next: null,
-        },
+      prevState[action.payload.roomId] = {
+        messages: [...action.payload.messages],
+        next: null,
       };
+      return {
+        ...prevState,
+      };
+    }
     default:
       return state;
   }

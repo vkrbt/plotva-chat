@@ -1,5 +1,6 @@
-const {findUserBySid, getUsers, saveUser} = require('./database/user');
+const {findUserBySid, removeUserById, getUsers, saveUser} = require('./database/user');
 const {joinRoom, leaveRoom, getRooms, getUserRooms, createRoom} = require('./database/room');
+const {removeSession} = require('./database/session');
 const {getMessages, sendMessage} = require('./database/messages');
 const TYPES = require('./messages');
 
@@ -26,7 +27,6 @@ module.exports = function (db, io) {
     io.on('connection', function (socket) {
         let {sid} = socket.request.cookies,
             isDisconnected = false;
-
         socket.join('broadcast');
 
         /**
@@ -234,6 +234,14 @@ module.exports = function (db, io) {
             ONLINE[user._id] = false;
 
             userChangeOnlineStatus(user._id);
+
+            // if (user.isFirstLogin) {
+            //     console.log(user);
+            //     sid = null;
+            //     delete ONLINE[user._id]
+            //     await removeSession(db, sid);
+            //     await removeUserById(db, user._id);
+            // }
         });
 
     });

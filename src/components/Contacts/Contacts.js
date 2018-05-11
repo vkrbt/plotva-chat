@@ -22,6 +22,7 @@ class ContactsComponent extends Component {
       if (!rooms.count) {
         this.createRoomWithUser(roomMembers, contact._id);
       } else {
+        await api.currentUserJoinRoom(rooms.items[0]._id);
         this.props.history.push(`/chat/${rooms.items[0]._id}`);
       }
     } catch (err) {
@@ -59,7 +60,7 @@ class ContactsComponent extends Component {
             } else {
               props.link = `/chat/${contact._id}`;
             }
-            if (contact.userName.toLowerCase().indexOf(this.props.search) + 1 > 0) {
+            if (contact.userName && contact.userName.toLowerCase().includes(this.props.search)) {
               return <Contact key={index} color={`${index}`} {...props} {...contact} />;
             }
             return null;

@@ -10,10 +10,10 @@ export const Contact = props => {
     avatar,
     userName,
     time,
-    content,
     count,
     icon,
     onClick,
+    content,
     link,
     color,
     size = 'large',
@@ -28,6 +28,9 @@ export const Contact = props => {
     });
   }
 
+  const lastMesage = content
+    ? content
+    : (props.messages && props.messages[0] && props.messages[0].text) || 'No messages';
   return (
     <div onClick={onClick} className={`contact contact_${size}`}>
       <Avatar avatar={avatar} size={size} checked={checked} defaultName={defaultName} color={color} />
@@ -50,7 +53,7 @@ export const Contact = props => {
           )}
         </div>
         <div className="content__body">
-          {content ? <div className={`content__text content__text_${contentType}`}>{content}</div> : false}
+          {lastMesage ? <div className={`content__text content__text_${contentType}`}>{lastMesage}</div> : false}
           {count ? <div className="content__counter">{count}</div> : false}
         </div>
       </div>
