@@ -27,10 +27,10 @@ export const Contact = props => {
       defaultName += word[0];
     });
   }
-
+  const messageLen = props.messages && props.messages.length;
   const lastMesage = content
     ? content
-    : (props.messages && props.messages[0] && props.messages[0].text) || 'No messages';
+    : (props.messages && props.messages[messageLen - 1] && props.messages[messageLen - 1].text) || 'No messages';
   return (
     <div onClick={onClick} className={`contact contact_${size}`}>
       <Avatar avatar={avatar} size={size} checked={checked} defaultName={defaultName} color={color} />

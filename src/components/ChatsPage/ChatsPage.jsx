@@ -13,6 +13,8 @@ const sortByLastMessage = roomsObj =>
     .filter(room => !['error', 'next', 'success'].includes(room))
     .map(room => roomsObj[room])
     .sort((room1, room2) => {
+      const room1length = room1.messages.length;
+      const room2length = room2.messages.length;
       if (!room1.messages.length) {
         return 1;
       }
@@ -20,7 +22,7 @@ const sortByLastMessage = roomsObj =>
         return -1;
       }
       return (
-        room2.messages[0].time - room1.messages[0].time
+        room2.messages[room2length - 1].time - room1.messages[room1length - 1].time
       );
     });
 

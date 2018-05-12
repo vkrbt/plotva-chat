@@ -102,8 +102,8 @@ async function createRoom(db, currentUser, room) {
     if (!existsRoom) {
         // If we clone room
         delete room._id;
-
-        room.users = room.users.map((user) =>  ObjectId(user._id.toString())) || [];
+        console.log(room)
+        room.users = room.users ? room.users.map((user) => ObjectId(user._id.toString())) : [];
         room.users.push(currentUser._id);
 
         return insertOrUpdateEntity(collection, room);
