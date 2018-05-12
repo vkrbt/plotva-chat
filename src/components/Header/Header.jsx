@@ -17,7 +17,7 @@ class HeaderComponent extends Component {
     try {
       const rooms = await api.getRooms({ name: this.props.chatName });
       if (!rooms.count) {
-        await this.createRoomWithUsers(this.props.chatName, selectedUsers);
+        const room = await this.createRoomWithUsers(this.props.chatName, selectedUsers);
 
         const users = [].concat(this.props.users);
         users.forEach(user => {
@@ -25,6 +25,7 @@ class HeaderComponent extends Component {
         });
         this.props.dispatch(setUsers(users));
         this.props.dispatch(setSelectedUsers([]));
+        this.props.history.push(`/chats/${room._id}`);
       }
     } catch (err) {
       this.setState({ error: 'Произошла ошибка.' });
@@ -34,9 +35,10 @@ class HeaderComponent extends Component {
   createRoomWithUsers = async (name, users) => {
     try {
       const room = await api.createRoom({ name, users });
-      // await Promise.all(users.map(user => this.joinUserToRoom(user._id, room._id)));
+      return room;
     } catch (err) {
       this.setState({ error: 'Произошла при создании комнаты.' });
+      return err;
     }
   };
 

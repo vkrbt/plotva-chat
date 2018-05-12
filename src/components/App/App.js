@@ -17,7 +17,7 @@ import { Login } from '../Login/Login';
 
 const ContactsPage = () => (
   <Layout
-    header={<Header type="contacts" title="Contacts" subtitle="" />}
+    header={<Header type="chats" title="Contacts" subtitle="" />}
     content={
       <React.Fragment>
         <SearchInput />
@@ -81,7 +81,7 @@ const SearchPage = () => (
 
 const DialogPage = ({ chat }) => (
   <Layout
-    header={<Header type="dialog" title={chat.title || 'Loading...'} subtitle={chat.subtitle || 'Loading...'} />}
+    header={<Header type="dialog" title={chat.title || 'Chat Name'} subtitle={chat.subtitle || ''} />}
     content={<Chat />}
     footer={<ChatForm />}
   />
