@@ -1,1 +1,2 @@
-web: node ./server.js
+server: yarn server
+client: yarn start
