@@ -6,7 +6,7 @@ class Api {
     constructor() {
         this.uniqueId = 0;
 
-        this._connectPromise = fetch('/api/auth', {credentials: 'same-origin'})
+        this._connectPromise = fetch(`${process.env.REACT_APP_SERVER_HOST || '127.0.0.1'}:${process.env.REACT_APP_SERVER_PORT ? process.env.REACT_APP_SERVER_PORT : ''}/api/auth`, {credentials: 'same-origin'})
             .then(() => this._setupSocket())
             .catch((err) => {
                 console.error('Auth problems: ' + err.message);

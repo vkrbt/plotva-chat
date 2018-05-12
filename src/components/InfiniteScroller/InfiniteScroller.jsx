@@ -43,7 +43,10 @@ export class InfiniteScroller extends Component {
 
     this.props
       .loadMore()
-      .catch(error => console.log('Error', error))
+      .catch(error => {
+        console.log('Error', error)
+        return error;
+      })
       .finally(() => {
         this.setState({ isLoading: false });
       });

@@ -1,2 +1,1 @@
-server: yarn server
-client: yarn start
+web: yarn build && yarn server

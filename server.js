@@ -8,7 +8,7 @@ const {
     MONGO_HOST,
     MONGO_PORT,
     SERVER_HOST = 'localhost',
-    SERVER_PORT = 3001
+    PORT = 3001
 } = process.env;
 
 /**
@@ -28,7 +28,7 @@ const DATABASE_CONFIG = {
  */
 const SERVER_CONFIG = {
     host: SERVER_HOST,
-    port: SERVER_PORT,
+    port: PORT,
 };
 
 createServer(SERVER_CONFIG, DATABASE_CONFIG)

@@ -1,4 +1,6 @@
 const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const app = express();
 const http = require('http').Server(app);
 const attachIO = require('socket.io');
@@ -23,6 +25,7 @@ const attachController = require('./controller');
 exports.createServer = function (serverConfig, databaseConfig) {
     return connect(databaseConfig).then((db) => {
         return new Promise((resolve) => {
+            app.use(cors())
             app.use(express.static('build'));
             app.use(cookie());
 
@@ -39,7 +42,6 @@ exports.createServer = function (serverConfig, databaseConfig) {
             });
 
             let io = attachIO(http);
-
             io.use(cookieParser());
 
             attachController(db, io);
@@ -53,6 +55,10 @@ exports.createServer = function (serverConfig, databaseConfig) {
                         createReadStream(index).pipe(res)
                     }
                 });
+            });
+
+            app.get('*', (req, res) => {
+                res.sendFile(path.join(global.__basedir, 'build', 'index.html'));
             });
 
             http.listen(serverConfig.port, function () {
